@@ -3,8 +3,6 @@
 
 #if defined(_linux_)
 	#error "This code must be compiled with a cross-compiler"
-#elif !defined(_i386_)
-	#error "This code must be compiled with an x86-elf compiler"
 #endif
 
 volatile uint16_t	*vga_buffer = (uint16_t *)0xB8000;
@@ -92,5 +90,5 @@ void				kernel_main()
 	term_init();
 
 	// Display a welcome message.
-	term_print("Welcome to the kernel.");
+	term_print("42");
 }

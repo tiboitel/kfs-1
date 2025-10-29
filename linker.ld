@@ -1,7 +1,7 @@
 /* Start execution at symbol designated as the entry point.
 entrypoint: 'start' in start.s */
 
-ENTRY(start)
+ENTRY(_start)
 
 SECTIONS
 {
