@@ -7,16 +7,16 @@ SECTIONS
 {
 	/* Begin putting sections at 1 Megabyte (1M).
 	Memory below 1 Megabyte is reserved for other x86-related usage. */
-	.= 1M;
+	. = 1M;
 
 	/* Align section in multiples of 4 Kilobytes (4K). 
 	Useful for paging. */
 
 	/* Multiboot header. Required to be near start of the executable. */
 	/* multiboot_header: read-only section. */
-	.rodata BLOCK(4K) : ALIGN(4K)
+	.multiboot BLOCK(4K) : ALIGN(4K)
 	{
-		*(.multiboot)	
+		KEEP(*(.multiboot))
 	}
 
 	/* Executable code. */
@@ -28,7 +28,7 @@ SECTIONS
 	/* Read-only data: */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{
-		*(.data)	
+		*(.rodata)	
 	}
 
 	/* Read-write data: (initialized) */

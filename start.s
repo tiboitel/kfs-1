@@ -1,7 +1,7 @@
 ; 'Magic' constant for Grub to detect kernel's location.
 %define MB_MAGIC 0x1BADB002
 ; Flags tells GRUB to load modules on page boundaries and provide a memory map.
-%define MB_FLAGS 0
+%define MB_FLAGS 0x00000001
 ; Calculate a cheksum that includes all the previous values.
 %define MB_CHECKSUM (0 - (MB_MAGIC + MB_FLAGS))
 

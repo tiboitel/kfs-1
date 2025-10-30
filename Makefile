@@ -4,8 +4,8 @@ BUILD_DIR := build
 OBJ_DIR := $(BUILD_DIR)/obj
 
 # Compiler and linker
-CC := gcc -m32 -ffreestanding -O2 -Wall -Wextra
-LD := ld -m elf_i386 -Ttext 0x1000
+CC := gcc -m32 -ffreestanding -fno-builtin -nostdlib -O2 -Wall -Wextra -Werror
+LD := ld -m elf_i386 -T linker.ld
 AS := nasm -f elf32
 
 # Source files

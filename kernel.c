@@ -2,15 +2,15 @@
 # include <stdint.h>
 
 #if defined(_linux_)
-	#error "This code must be compiled with a cross-compiler"
+#error "This code must be compiled with a cross-compiler"
 #endif
 
-volatile uint16_t	*vga_buffer = (uint16_t *)0xB8000;
+volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
 const int			VGA_COLS = 80;
 const int			VGA_ROWS = 25;
 
-int					term_col = 0;
-int					term_row = 0;
+int				term_col = 0;
+int				term_row = 0;
 // term_color: black background, white foreground.
 uint8_t				term_color = 0x0F;
 
@@ -44,7 +44,7 @@ void				term_putc(char c)
 				term_row++;
 				break;
 			}
-		// Characters get displayed and increment column.
+			// Characters get displayed and increment column.
 		default:
 			{
 				// Calculate vga_buffer index.
@@ -62,13 +62,12 @@ void				term_putc(char c)
 		term_col = 0;
 		term_row++;
 	}
-	
+
 	// If we get past last row, reset the column to 0
 	// and increment the row to get to a new line.
 	if (term_row >= VGA_ROWS)
 	{
 		term_row = 0;
-		term_row++;
 	}
 }
 
