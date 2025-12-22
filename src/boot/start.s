@@ -1,7 +1,12 @@
 ; 'Magic' constant for Grub to detect kernel's location.
 %define MB_MAGIC 0x1BADB002
+
 ; Flags tells GRUB to load modules on page boundaries and provide a memory map.
-%define MB_FLAGS 0x00000001
+; Bit 0: align modules on page boundaries
+; Bit 1: request memory map from GRUB
+; Multiboot provides ONLY what we explicitly request.
+%define MB_FLAGS 0x00000003
+
 ; Calculate a cheksum that includes all the previous values.
 %define MB_CHECKSUM (0 - (MB_MAGIC + MB_FLAGS))
 
@@ -15,6 +20,11 @@ section .multiboot
     dd MB_CHECKSUM
 
 ; Section who contains data initalised to zeroes after kernel loaded.
+; Stack is allocated in .bss.
+; This is safe at early boot because:
+; - paging is disabled
+; - memory is identity-mapped by GRUB
+; Later, stack should move to a dedicated region.
 section .bss
     ; Aligned following data on a multiple of 16 bytes.
     align 16
@@ -36,9 +46,11 @@ section .text
         ; Set up enviroment to run C code.
         ; On x86, stack grows downward. So, start on top.
         ; Set stack pointer to the top of the stack.
-        mov esp, stack_top
-        ; Call our main function.
-        call kernel_main
+	mov esp, stack_top
+	and esp, 0xFFFFFFF0    ; 16-byte alignment for C ABI
+
+	; Call our main function.
+	call kernel_main
 
     hang:
         ; If the kernel's C code returns, we hang to the CPU.

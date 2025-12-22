@@ -1,21 +1,14 @@
-# include <stddef.h>
-# include <stdint.h>
-
-#if defined(_linux_)
-#error "This code must be compiled with a cross-compiler"
-#endif
+#include "kernel/terminal.h"
 
 volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
-const int			VGA_COLS = 80;
-const int			VGA_ROWS = 25;
 
-int				term_col = 0;
-int				term_row = 0;
+static size_t			term_col = 0;
+static size_t			term_row = 0;
 // term_color: black background, white foreground.
 uint8_t				term_color = 0x0F;
 
 // term_init: initiates the terminal by clearing it.
-void				term_init()
+void				terminal_init()
 {
 	size_t			index;
 
@@ -29,8 +22,13 @@ void				term_init()
 	}
 }
 
-// term_putc: place single character on the screen.
-void				term_putc(char c)
+
+/* term_putc: place single character on the screen.
+*  No scrolling implemented yet.
+*  When bottom of screen is reached,
+*  output wraps to the top.
+*/
+void				terminal_putc(char c)
 {
 	size_t			index;
 
@@ -72,22 +70,12 @@ void				term_putc(char c)
 }
 
 // term_print: print a single string onto the screen.
-void				term_print(const char *str)
+void				terminal_print(const char *str)
 {
 	size_t			i;
 
 	for (i = 0; str[i] != '\0'; i++)
 	{
-		term_putc(str[i]);
+		terminal_putc(str[i]);
 	}
-}
-
-// kernel_main: main function.
-void				kernel_main()
-{
-	// Initiate the terminal.
-	term_init();
-
-	// Display a welcome message.
-	term_print("42");
 }
