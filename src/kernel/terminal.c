@@ -5,7 +5,37 @@ volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
 static size_t			term_col = 0;
 static size_t			term_row = 0;
 // term_color: black background, white foreground.
-uint8_t				term_color = 0x0F;
+static uint8_t			term_color = 0x0F;
+
+// vga_color_entry: create a VGA color byte from foreground and background colors.
+uint8_t				vga_color_entry(enum vga_color fg, enum vga_color bg)
+{
+	return fg | (bg << 4);
+}
+
+// terminal_setcolor: change the current terminal color.
+void				terminal_setcolor(uint8_t color)
+{
+	term_color = color;
+}
+
+// terminal_clear: clear the entire screen with the current color.
+void				terminal_clear(void)
+{
+	size_t			index;
+
+	term_col = 0;
+	term_row = 0;
+	
+	for (int col = 0; col < VGA_COLS; col++)
+	{
+		for (int row = 0; row < VGA_ROWS; row++)
+		{
+			index = (VGA_COLS * row) + col;	
+			vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
+		}
+	}
+}
 
 // term_init: initiates the terminal by clearing it.
 void				terminal_init()
