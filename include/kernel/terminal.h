@@ -31,6 +31,11 @@ void terminal_init(void);
 void terminal_putc(char c);
 void terminal_print(const char *str);
 void terminal_clear(void);
+void terminal_repaint(uint8_t color);
+void terminal_scroll(void);
+void terminal_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
+void terminal_disable_cursor(void);
+void terminal_update_cursor(void);
 uint8_t vga_color_entry(enum vga_color fg, enum vga_color bg);
 void terminal_setcolor(uint8_t color);
 

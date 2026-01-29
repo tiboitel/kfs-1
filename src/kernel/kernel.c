@@ -10,20 +10,24 @@ void				kernel_main()
 	// Initiate the terminal.
 	terminal_init();
 
-
-	terminal_setcolor(vga_color_entry(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
-	// Clear entire screen with this color
+	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	terminal_clear();
 	
-	// Write text (will be black on red)
-	terminal_print("42\n\n\n");
+	// Print many lines to demonstrate scrolling
+	for (int i = 1; i <= 30; i++)
+	{
+		terminal_print("Line ");
+		// Simple number printing (hackish but works for demo)
+		if (i >= 10)
+			terminal_putc('0' + (i / 10));
+		terminal_putc('0' + (i % 10));
+		terminal_print("\n");
+	}
+	
+	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
+	terminal_print("\n42\n\n\n");
 
-	// Set color: black text on red background
-	terminal_setcolor(vga_color_entry(VGA_COLOR_BLACK, VGA_COLOR_LIGHT_MAGENTA));
-	terminal_print("VGA Colors :");
-	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_WHITE));
-	terminal_print(" Successfully!\n");
-
-
+	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+	terminal_print("Sucessfuly changed terminal color!\n");
 
 }
