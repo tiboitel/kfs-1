@@ -1,3 +1,5 @@
+# WARNING: If you want compile in 42, you need to replace 'grub2-mkrescue' by 'grub-mkrescue'
+
 # Directories
 SRC_DIR := src
 BUILD_DIR := build
@@ -7,7 +9,7 @@ OBJ_DIR := $(BUILD_DIR)/obj
 CFLAGS := -m32 -ffreestanding -fno-builtin -nostdlib -O2 \
 	  -Wall -Wextra -Werror -Iinclude
 CC := gcc $(CFLAGS) 
-LD := ld -m elf_i386 -T linker.ld
+LD := ld -T linker.ld -m elf_i386
 AS := nasm -f elf32
 
 # Source files
@@ -19,9 +21,10 @@ OBJS := \
 
 # Output
 KERNEL := $(BUILD_DIR)/kernel.bin
+ISO := kernel.iso
 
 # Rules
-all: $(KERNEL)
+all: run
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)
@@ -37,6 +40,16 @@ $(KERNEL): $(OBJS)
 
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf iso $(ISO)
 
-.PHONY: all clean
+iso: $(KERNEL)
+	mkdir -p iso/boot/grub
+	cp $(KERNEL) iso/boot/
+	cp grub.cfg iso/boot/grub/
+	grub2-mkrescue -o $(ISO) iso
+
+run: iso
+	qemu-system-i386 -cdrom $(ISO)
+
+.PHONY: all clean iso run
 

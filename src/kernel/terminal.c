@@ -20,12 +20,12 @@ void				terminal_init()
 			vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
 		}
 	}
-}
+	}
 
 
-/* term_putc: place single character on the screen.
-*  No scrolling implemented yet.
-*  When bottom of screen is reached,
+	/* term_putc: place single character on the screen.
+	*  No scrolling implemented yet.
+	*  When bottom of screen is reached,
 *  output wraps to the top.
 */
 void				terminal_putc(char c)
