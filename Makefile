@@ -51,5 +51,5 @@ iso: $(KERNEL)
 run: iso
 	qemu-system-i386 -cdrom $(ISO)
 
-.PHONY: all clean iso run
+.PHONY: all clean iso run bonus
 

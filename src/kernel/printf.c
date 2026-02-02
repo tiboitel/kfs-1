@@ -1,5 +1,5 @@
 
-#include "kernel/printf.h"
+#include "kernel/io.h"
 #include "kernel/terminal.h"
 
 static int	check_arg(char c, va_list arg, int *compteur);
@@ -8,9 +8,6 @@ static void	ft_putstr(char *str, int *compteur);
 static void	ft_putnbr(int nb, int *compteur);
 static void	ft_putnbr_unsigned(unsigned int nb, int *compteur);
 static void	ft_putnbr_base(unsigned long long nbr, char *base, int *compteur, char c);
-static char	*ft_strdup(const char *s1);
-static unsigned int	ft_strlcpy(char *dst, const char *src, unsigned int size);
-static unsigned int	ft_strlen(const char *str);
 
 int	ft_printf(const char *s, ...)
 {
@@ -23,7 +20,7 @@ int	ft_printf(const char *s, ...)
 		return (-1);
 	i = 0;
 	compteur = 0;
-	str = ft_strdup(s);
+	str = (char *)s;
 	va_start(arg, s);
 	while (str[i])
 	{
@@ -37,7 +34,6 @@ int	ft_printf(const char *s, ...)
 		i++;
 	}
 	va_end(arg);
-	free(str);
 	return (compteur);
 }
 
@@ -71,7 +67,7 @@ static int	check_arg(char c, va_list arg, int *compteur)
 
 static void	ft_putchar(char c, int *compteur)
 {
-	terminal_putc(c);
+	terminal_putc(c);	
 	(*compteur)++;
 }
 
@@ -144,59 +140,5 @@ static void	ft_putnbr_base(\
 			ft_putnbr_base(nbr / 16, base, compteur, c);
 		ft_putchar(base[nbr % 16], compteur);
 	}
-}
-
-static char	*ft_strdup(const char *s1)
-{
-	char	*str;
-	size_t	len;
-	size_t	i;
-
-	i = 0;
-	len = ft_strlen(s1);
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (str == NULL)
-		return (NULL);
-	while (s1[i])
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
-
-static unsigned int	ft_strlcpy(char *dst, const char *src, unsigned int size)
-{
-	unsigned int	i;
-
-	i = 0;
-	if (size == 0)
-		return (ft_strlen(src));
-	if (size == 1)
-	{
-		dst[0] = '\0';
-		return (ft_strlen(src));
-	}
-	while (src[i] && i < size - 1)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	if (i < size)
-		dst[i] = '\0';
-	return (ft_strlen(src));
-}
-
-static unsigned int	ft_strlen(const char *str)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		i++;
-	}
-	return (i);
 }
 

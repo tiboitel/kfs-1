@@ -6,6 +6,9 @@
 
 # define VGA_COLS 80
 # define VGA_ROWS 25
+# define MAX_SCREENS 100
+
+# define PROMPT "root@kfs:~$ "
 
 // VGA color constants
 enum vga_color {
@@ -27,9 +30,24 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
+// Screen structure for virtual screens
+typedef struct s_screen {
+	uint16_t	buffer[VGA_ROWS * VGA_COLS];
+	size_t		cursor_row;
+	size_t		cursor_col;
+	uint8_t		color;
+	size_t		input_start_row;
+	size_t		input_end_row;
+	size_t		input_end_col;
+	int			is_initialized;
+} t_screen;
+
+// Terminal functions
 void terminal_init(void);
 void terminal_putc(char c);
 void terminal_print(const char *str);
+void terminal_display_prompt(const char *prompt);
+
 void terminal_clear(void);
 void terminal_repaint(uint8_t color);
 void terminal_scroll(void);
@@ -46,5 +64,16 @@ void terminal_move_cursor_left(void);
 void terminal_move_cursor_right(void);
 void terminal_move_cursor_up(void);
 void terminal_move_cursor_down(void);
+
+// Virtual screens
+void screen_init(void);
+void screen_switch(int screen_id);
+void screen_save_current(void);
+void screen_load(int screen_id);
+int screen_get_current(void);
+
+// utils
+size_t	ft_strlen(const char *str);
+size_t strncmp(const char *s1, const char *s2, size_t n);
 
 #endif

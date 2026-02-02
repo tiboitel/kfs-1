@@ -5,10 +5,18 @@
 # include <stdint.h>
 # include <stddef.h>
 
-//// Define basic types if stdint.h not available
-//typedef unsigned char		uint8_t;
-//typedef unsigned short		uint16_t;
-//typedef unsigned int		uint32_t;
+# include <stdarg.h>
+
+# define UINT_MAX 4294967295
+# define INT_MAX 2147483647
+# define INT_MIN -2147483648
+
+int	ft_printf(const char *s, ...);
+
+
+/*
+  I/O port operations
+*/
 
 // Read a byte from a port
 static inline uint8_t inb(uint16_t port)

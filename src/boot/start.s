@@ -29,4 +29,3 @@ section .text
     .halt:
         hlt
         jmp .halt
-

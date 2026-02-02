@@ -1,4 +1,5 @@
 #include "kernel/terminal.h"
+	#include "kernel/io.h"
 
 // External functions
 extern void			cursor_update(size_t row, size_t col);
@@ -6,13 +7,14 @@ extern uint8_t			color_get_current(void);
 
 // VGA buffer and cursor position
 volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
-static size_t			term_col = 0;
-static size_t			term_row = 0;
+size_t				term_col = 0;
+size_t				term_row = 0;
 
 // Input tracking (for cursor movement limits)
-static size_t			input_start_row = 0;
-static size_t			input_end_col = 0;
-static size_t			input_end_row = 0;
+size_t				input_start_row = 0;
+size_t				input_start_col = 0;
+size_t				input_end_col = 0;
+size_t				input_end_row = 0;
 
 // terminal_update_cursor: wrapper to update cursor at current position.
 void				terminal_update_cursor(void)
@@ -84,6 +86,7 @@ void				terminal_init()
 	
 	// Initialize input tracking
 	input_start_row = 0;
+	input_start_col = 0;
 	input_end_col = 0;
 	input_end_row = 0;
 	
@@ -139,10 +142,20 @@ void				terminal_backspace(void)
 	size_t			index;
 	uint8_t			term_color = color_get_current();
 
-	if (term_col == 0)
+	// Block backspace if before input start position
+	if (term_row < input_start_row || (term_row == input_start_row && term_col <= input_start_col))
 		return;
 
-	term_col--;
+	if (term_col == 0)
+	{
+		term_row--;
+		term_col = VGA_COLS - 1;
+	}
+	else
+	{
+		term_col--;
+	}
+	
 	index = (VGA_COLS * term_row) + term_col;
 	vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
 	
@@ -222,4 +235,16 @@ void				terminal_move_cursor_down(void)
 		term_row++;
 		terminal_update_cursor();
 	}
+}
+
+// terminal_display_prompt: display prompt and save position for input
+void				terminal_display_prompt(const char *prompt)
+{
+	terminal_print(prompt);
+	
+	// Save current position as input start (after prompt)
+	input_start_row = term_row;
+	input_start_col = term_col;
+	input_end_col = term_col;
+	input_end_row = term_row;
 }

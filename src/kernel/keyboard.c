@@ -1,6 +1,23 @@
 #include "kernel/keyboard.h"
 #include "kernel/terminal.h"
 
+// Scancodes for special keys
+#define KEY_CTRL	0x1D
+#define KEY_ALT		0x38
+#define KEY_UP		0x48
+#define KEY_DOWN	0x50
+#define KEY_LEFT	0x4B
+#define KEY_RIGHT	0x4D
+#define KEY_DELETE	0x53
+#define KEY_1		0x02
+#define KEY_2		0x03
+#define KEY_3		0x04
+#define KEY_4		0x05
+
+// Modifier keys state
+static int			ctrl_pressed = 0;
+static int			alt_pressed = 0;
+
 // US QWERTY keymap (scancodes to ASCII)
 static const char keymap[128] = {
 	0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',	// 0x00-0x0E
@@ -60,9 +77,68 @@ void			keyboard_poll(void)
 	// Read scancode from keyboard
 	scancode = inb(KEYBOARD_DATA_PORT);
 
+	// Handle Ctrl key press/release
+	if (scancode == KEY_CTRL)
+	{
+		ctrl_pressed = 1;
+		return;
+	}
+	else if (scancode == (KEY_CTRL | 0x80))
+	{
+		ctrl_pressed = 0;
+		return;
+	}
+
+	// Handle Alt key press/release
+	if (scancode == KEY_ALT)
+	{
+		alt_pressed = 1;
+		return;
+	}
+	else if (scancode == (KEY_ALT | 0x80))
+	{
+		alt_pressed = 0;
+		return;
+	}
+
 	// Only handle key press (bit 7 = 0)
 	if (scancode & 0x80)
 		return;
+
+	// Handle Alt+arrows for screen switching
+	if (alt_pressed)
+	{
+		if (scancode == KEY_LEFT)
+		{
+			int current = screen_get_current();
+			if (current > 0)
+				screen_switch(current - 1);
+		}
+		else if (scancode == KEY_RIGHT)
+		{
+			int current = screen_get_current();
+			if (current < MAX_SCREENS - 1)
+				screen_switch(current + 1);
+		}
+		return;
+	}
+
+	// Handle Ctrl+number for screen switching (backup method)
+	if (ctrl_pressed)
+	{
+		char second_letter = keymap[scancode];
+		if (second_letter == 'l')
+		{
+			terminal_clear();
+			terminal_display_prompt(PROMPT);
+		}
+		if (second_letter == 'c')
+		{
+			ft_printf("^C\n");
+			terminal_display_prompt(PROMPT);
+		}
+		return;
+	}
 
 	// Handle arrow keys
 	if (scancode == KEY_UP)
@@ -101,6 +177,13 @@ void			keyboard_poll(void)
 		return;
 	}
 
+	// Handle Enter key - display new line and prompt
+	if (ch == '\n')
+	{
+		terminal_putc('\n');
+		terminal_display_prompt(PROMPT);
+		return;
+	}
 	// Print character if valid
 	if (ch != 0)
 		terminal_putc(ch);
