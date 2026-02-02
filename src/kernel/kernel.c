@@ -1,4 +1,5 @@
 # include "kernel/terminal.h"
+# include "kernel/keyboard.h"
 
 #if defined(_linux_)
 #error "This code must be compiled with a cross-compiler"
@@ -13,21 +14,19 @@ void				kernel_main()
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	terminal_clear();
 	
-	// Print many lines to demonstrate scrolling
-	for (int i = 1; i <= 30; i++)
-	{
-		terminal_print("Line ");
-		// Simple number printing (hackish but works for demo)
-		if (i >= 10)
-			terminal_putc('0' + (i / 10));
-		terminal_putc('0' + (i % 10));
-		terminal_print("\n");
-	}
-	
-	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
-	terminal_print("\n42\n\n\n");
-
+	// Initialize keyboard (polling mode)
+	keyboard_init();
+	terminal_print("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
-	terminal_print("Sucessfuly changed terminal color!\n");
+	terminal_print("Bonus Implemented...\n\n\n");
+	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
+	terminal_setcolor(vga_color_entry(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
+	terminal_print("- Use Arrow Keys to move cursor. Backspace and Delete supported.\n");
+	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 
+	// Infinite loop - poll keyboard
+	while (1)
+	{
+		keyboard_poll();
+	}
 }

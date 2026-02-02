@@ -1,11 +1,11 @@
 #ifndef TERMINAL_H
-#define TERMINAL_H
+# define TERMINAL_H
 
-#include <stddef.h>
-#include <stdint.h>
+# include <stddef.h>
+# include <stdint.h>
 
-#define VGA_COLS 80
-#define VGA_ROWS 25
+# define VGA_COLS 80
+# define VGA_ROWS 25
 
 // VGA color constants
 enum vga_color {
@@ -38,5 +38,13 @@ void terminal_disable_cursor(void);
 void terminal_update_cursor(void);
 uint8_t vga_color_entry(enum vga_color fg, enum vga_color bg);
 void terminal_setcolor(uint8_t color);
+
+// New functions for keyboard support
+void terminal_backspace(void);
+void terminal_delete(void);
+void terminal_move_cursor_left(void);
+void terminal_move_cursor_right(void);
+void terminal_move_cursor_up(void);
+void terminal_move_cursor_down(void);
 
 #endif

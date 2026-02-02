@@ -1,15 +1,18 @@
 #include "kernel/terminal.h"
 
-// External functions from cursor.c
+// External functions
 extern void			cursor_update(size_t row, size_t col);
-
-// External functions from color.c
 extern uint8_t			color_get_current(void);
 
+// VGA buffer and cursor position
 volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
-
 static size_t			term_col = 0;
 static size_t			term_row = 0;
+
+// Input tracking (for cursor movement limits)
+static size_t			input_start_row = 0;
+static size_t			input_end_col = 0;
+static size_t			input_end_row = 0;
 
 // terminal_update_cursor: wrapper to update cursor at current position.
 void				terminal_update_cursor(void)
@@ -65,7 +68,6 @@ void				terminal_scroll(void)
 	term_col = 0;
 }
 
-// term_init: initiates the terminal by clearing it.
 void				terminal_init()
 {
 	size_t			index;
@@ -80,61 +82,48 @@ void				terminal_init()
 		}
 	}
 	
-	// Enable cursor (scanlines 0-15 for block cursor)
+	// Initialize input tracking
+	input_start_row = 0;
+	input_end_col = 0;
+	input_end_row = 0;
+	
 	terminal_enable_cursor(0, 15);
 	terminal_update_cursor();
 }
 
-
-	/* term_putc: place single character on the screen.
-	*  With scrolling support.
-	*  When bottom of screen is reached, screen scrolls up.
-*/
 void				terminal_putc(char c)
 {
 	size_t			index;
 	uint8_t			term_color = color_get_current();
 
-	index = 0;
-	switch (c)
+	if (c == '\n')
 	{
-		// Newline character return column to 0 and increment row.
-		case '\n':
-			{
-				term_col = 0;
-				term_row++;
-				break;
-			}
-			// Characters get displayed and increment column.
-		default:
-			{
-				// Calculate vga_buffer index.
-				index = (VGA_COLS * term_row) + term_col;
-				vga_buffer[index] = ((uint16_t)term_color << 8) | c;
-				term_col++;
-				break;
-			}
+		term_col = 0;
+		term_row++;
+	}
+	else
+	{
+		index = (VGA_COLS * term_row) + term_col;
+		vga_buffer[index] = ((uint16_t)term_color << 8) | c;
+		term_col++;
 	}
 
-	// If we get past last colummn, reset the column to 0
-	// and increment the row to a new line.
 	if (term_col >= VGA_COLS)
 	{
 		term_col = 0;
 		term_row++;
 	}
 
-	// If we get past last row, scroll the screen
 	if (term_row >= VGA_ROWS)
-	{
 		terminal_scroll();
-	}
 	
-	// Update cursor position
+	// Update input end position
+	input_end_col = term_col;
+	input_end_row = term_row;
+	
 	terminal_update_cursor();
 }
 
-// term_print: print a single string onto the screen.
 void				terminal_print(const char *str)
 {
 	size_t			i;
@@ -142,5 +131,95 @@ void				terminal_print(const char *str)
 	for (i = 0; str[i] != '\0'; i++)
 	{
 		terminal_putc(str[i]);
+	}
+}
+
+void				terminal_backspace(void)
+{
+	size_t			index;
+	uint8_t			term_color = color_get_current();
+
+	if (term_col == 0)
+		return;
+
+	term_col--;
+	index = (VGA_COLS * term_row) + term_col;
+	vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
+	
+	if (term_row == input_end_row && term_col < input_end_col)
+		input_end_col = term_col;
+	
+	terminal_update_cursor();
+}
+
+void				terminal_delete(void)
+{
+	size_t			index;
+	uint8_t			term_color = color_get_current();
+
+	index = (VGA_COLS * term_row) + term_col;
+	vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
+	terminal_update_cursor();
+}
+
+void				terminal_move_cursor_left(void)
+{
+	if (term_row == input_start_row && term_col <= 0)
+		return;
+	
+	if (term_col > 0)
+	{
+		term_col--;
+	}
+	else if (term_row > input_start_row)
+	{
+		term_row--;
+		// Find last non-space character in previous line
+		int col;
+		for (col = VGA_COLS - 1; col >= 0; col--)
+		{
+			size_t index = (VGA_COLS * term_row) + col;
+			if ((vga_buffer[index] & 0xFF) != ' ')
+			{
+				term_col = col + 1;
+				break;
+			}
+		}
+		if (col < 0)
+			term_col = 0;
+	}
+	terminal_update_cursor();
+}
+
+void				terminal_move_cursor_right(void)
+{
+	if (term_row == input_end_row && term_col >= input_end_col)
+		return;
+	if (term_row > input_end_row)
+		return;
+	
+	if (term_col < VGA_COLS - 1)
+	{
+		term_col++;
+	}
+	else if (term_row < input_end_row)
+	{
+		term_row++;
+		term_col = 0;
+	}
+	terminal_update_cursor();
+}
+
+void				terminal_move_cursor_up(void)
+{
+	// Disabled: stay on current line
+}
+
+void				terminal_move_cursor_down(void)
+{
+	if (term_row < input_end_row && term_row < VGA_ROWS - 1)
+	{
+		term_row++;
+		terminal_update_cursor();
 	}
 }
