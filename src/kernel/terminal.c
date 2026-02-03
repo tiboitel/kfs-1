@@ -139,13 +139,13 @@ void				terminal_print(const char *str)
 
 void				terminal_backspace(void)
 {
-	size_t			index;
 	uint8_t			term_color = color_get_current();
 
 	// Block backspace if before input start position
 	if (term_row < input_start_row || (term_row == input_start_row && term_col <= input_start_col))
 		return;
 
+	// Move cursor back
 	if (term_col == 0)
 	{
 		term_row--;
@@ -156,11 +156,46 @@ void				terminal_backspace(void)
 		term_col--;
 	}
 	
-	index = (VGA_COLS * term_row) + term_col;
-	vga_buffer[index] = ((uint16_t)term_color << 8) | ' ';
+	// Shift all characters after cursor position to the left
+	size_t current_row = term_row;
+	size_t current_col = term_col;
 	
-	if (term_row == input_end_row && term_col < input_end_col)
-		input_end_col = term_col;
+	while (current_row < input_end_row || (current_row == input_end_row && current_col < input_end_col))
+	{
+		size_t current_index = (VGA_COLS * current_row) + current_col;
+		size_t next_col = current_col + 1;
+		size_t next_row = current_row;
+		
+		if (next_col >= VGA_COLS)
+		{
+			next_col = 0;
+			next_row++;
+		}
+		
+		size_t next_index = (VGA_COLS * next_row) + next_col;
+		
+		// Copy next character to current position
+		if (next_row <= input_end_row)
+			vga_buffer[current_index] = vga_buffer[next_index];
+		
+		current_col = next_col;
+		current_row = next_row;
+	}
+	
+	// Clear the last character position
+	size_t last_index = (VGA_COLS * input_end_row) + input_end_col;
+	if (input_end_col > 0)
+	{
+		input_end_col--;
+		last_index = (VGA_COLS * input_end_row) + input_end_col;
+	}
+	else if (input_end_row > 0)
+	{
+		input_end_row--;
+		input_end_col = VGA_COLS - 1;
+		last_index = (VGA_COLS * input_end_row) + input_end_col;
+	}
+	vga_buffer[last_index] = ((uint16_t)term_color << 8) | ' ';
 	
 	terminal_update_cursor();
 }
@@ -177,7 +212,10 @@ void				terminal_delete(void)
 
 void				terminal_move_cursor_left(void)
 {
-	if (term_row == input_start_row && term_col <= 0)
+	// Block movement if at or before prompt
+	if (term_row < input_start_row)
+		return;
+	if (term_row == input_start_row && term_col <= input_start_col)
 		return;
 	
 	if (term_col > 0)
