@@ -18,8 +18,7 @@ AS 			:= nasm -f elf32
 # Source files
 ASM_SRCS 	:= $(shell find $(SRC_DIR) -name '*.s')
 C_SRCS 		:= $(shell find $(SRC_DIR) -name '*.c')
-OBJS 		:= \
-			   $(ASM_SRCS:$(SRC_DIR)/%.s=$(OBJ_DIR)/%.o) \
+OBJS 		:= $(ASM_SRCS:$(SRC_DIR)/%.s=$(OBJ_DIR)/%.o) \
 			   $(C_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Output
@@ -45,7 +44,7 @@ run: iso
 build-iso: $(KERNEL)
 	mkdir -p iso/boot/grub
 	cp $(KERNEL) iso/boot/
-	cp $(SRC_DIR)/boot/logo.png iso/boot/logo.png 2>/dev/null || true
+	cp $(SRC_DIR)/boot/logo.png iso/boot/logo.png
 	cp grub.cfg iso/boot/grub/
 	grub-mkrescue -o $(ISO) iso
 
