@@ -45,6 +45,7 @@ run: iso
 build-iso: $(KERNEL)
 	mkdir -p iso/boot/grub
 	cp $(KERNEL) iso/boot/
+	cp $(SRC_DIR)/boot/logo.png iso/boot/logo.png 2>/dev/null || true
 	cp grub.cfg iso/boot/grub/
 	grub-mkrescue -o $(ISO) iso
 
