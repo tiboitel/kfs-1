@@ -8,6 +8,7 @@ RUN apt-get update && \
         make \
         qemu-system-x86 \
         grub-pc-bin \
+        grub-common \
         xorriso \
         wget \
         ca-certificates \
