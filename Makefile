@@ -1,7 +1,7 @@
 
 # Docker configuration
-DOCKER_IMAGE := i386-kernel-env
-DOCKER_RUN 	 := docker run --rm -v $(shell pwd):/workspace -w /workspace $(DOCKER_IMAGE)
+DOCKER_IMAGE := kfs-os-dev:latest
+DOCKER_RUN	 := docker run --rm -v $(shell pwd):/workspace -w /workspace $(DOCKER_IMAGE)
 
 # Directories
 SRC_DIR 	:= src
@@ -27,28 +27,22 @@ KERNEL 		:= $(BUILD_DIR)/kernel.bin
 ISO 		:= kernel.iso
 
 # Rules
-all: docker-run
+all: run
 
 # Build Docker image if it doesn't exist
-docker-image:
+docker:
 	@docker images $(DOCKER_IMAGE) | grep -q $(DOCKER_IMAGE) || docker build -t $(DOCKER_IMAGE) .
 
-# Build kernel inside Docker
-docker-build: docker-image
-	$(DOCKER_RUN) make local-build
-
-# Build ISO inside Docker
-docker-iso: docker-image
-	$(DOCKER_RUN) make local-iso
+# Create ISO (builds kernel inside Docker)
+iso: docker
+	$(DOCKER_RUN) make build-iso
 
 # Run QEMU with the ISO
-docker-run: docker-iso
+run: iso
 	qemu-system-i386 -cdrom $(ISO)
 
-# Local build rules (executed inside Docker container)
-local-build: $(KERNEL)
-
-local-iso: $(KERNEL)
+# Internal rules (executed inside Docker container)
+build-iso: $(KERNEL)
 	mkdir -p iso/boot/grub
 	cp $(KERNEL) iso/boot/
 	cp grub.cfg iso/boot/grub/
@@ -71,9 +65,9 @@ clean:
 	rm -rf iso $(ISO)
 
 fclean: clean
-	docker rmi -f $(DOCKER_IMAGE) 2>/dev/null || true
+	docker rmi -f $(DOCKER_IMAGE)
 
 re: clean all
 
-.PHONY: all clean fclean re docker-image docker-build docker-iso docker-run local-build local-iso
+.PHONY: all clean fclean re docker iso run build-iso
 
