@@ -1,6 +1,7 @@
 # include "kernel/terminal.h"
 # include "kernel/keyboard.h"
 # include "kernel/io.h"
+# include "kernel/gdt.h"
 
 char *g_str = "KFS Kernel v0.1";
 
@@ -11,6 +12,9 @@ char *g_str = "KFS Kernel v0.1";
 // kernel_main: main function.
 void				kernel_main()
 {
+	// Initialize GDT
+	gdt_init();
+	
 	// Initiate the terminal.
 	terminal_init();
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
@@ -21,7 +25,6 @@ void				kernel_main()
 	
 	// Initialize virtual screens
 	screen_init();
-	
 	
 	ft_printf("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
@@ -34,6 +37,9 @@ void				kernel_main()
 	ft_printf("- Each screen has its own buffer and cursor position.\n\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	
+	ft_printf("KF 2:\n\n");
+	//stack_dump();
+
 	terminal_display_prompt(PROMPT);
 	
 	// Infinite loop - poll keyboard

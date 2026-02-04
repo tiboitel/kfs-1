@@ -11,9 +11,6 @@
 # define INT_MAX 2147483647
 # define INT_MIN -2147483648
 
-int	ft_printf(const char *s, ...);
-
-
 /*
   I/O port operations
 */
@@ -37,5 +34,8 @@ static inline void io_wait(void)
 {
     outb(0x80, 0);
 }
+
+// Formatted output to terminal
+int	ft_printf(const char *s, ...);
 
 #endif

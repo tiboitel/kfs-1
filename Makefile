@@ -10,7 +10,7 @@ OBJ_DIR 	:= $(BUILD_DIR)/obj
 
 # Compiler and linker (used inside Docker)
 CFLAGS		:= -Wall -Wextra -Werror -Iinclude
-CPPFLAGS 	:= -m32 -ffreestanding -fno-builtin -nostdlib -O2
+CPPFLAGS 	:= -m32 -ffreestanding -fno-builtin -nostdlib -O2 -fno-omit-frame-pointer
 CC 			:= gcc $(CFLAGS) $(CPPFLAGS)
 LD 			:= ld -T linker.ld -m elf_i386
 AS 			:= nasm -f elf32
