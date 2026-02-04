@@ -26,19 +26,18 @@ void				kernel_main()
 	// Initialize virtual screens
 	screen_init();
 	
-	ft_printf("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
-	ft_printf("Welcome to %s\n", g_str);
-	ft_printf("Bonus Implemented...\n\n\n");
+	ft_printf("Welcome to %s\n\n", g_str);
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
+	ft_printf("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
 	ft_printf("- Use Arrow Keys to move cursor. Backspace and Delete supported.\n");
 	ft_printf("- Use Alt+Left/Right arrows to switch between screens.\n");
-	ft_printf("- Each screen has its own buffer and cursor position.\n\n");
+	ft_printf("- Use keyboard to write in the terminal.\n");
+	ft_printf("- Use command help to see available commands.\n\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	
-	ft_printf("KF 2:\n\n");
-	//stack_dump();
+	//print_stack();
 
 	terminal_display_prompt(PROMPT);
 	
