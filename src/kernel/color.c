@@ -1,4 +1,7 @@
 #include "kernel/terminal.h"
+#include "kernel/libc.h"
+#include "kernel/io.h"
+#include "kernel/vga.h"
 
 // External reference to VGA buffer
 extern uint16_t *vga_buffer;
@@ -34,8 +37,13 @@ void				terminal_setcolor(uint8_t color)
 // Keeps existing characters, only updates their color attributes.
 void				terminal_repaint(uint8_t color)
 {
-	size_t			index;
+	extern t_screen screens[MAX_SCREENS];
+	int i;
+	size_t index;
+
+	color_set_current(color);
 	
+	// Update VGA buffer (current screen)
 	for (int col = 0; col < VGA_COLS; col++)
 	{
 		for (int row = 0; row < VGA_ROWS; row++)
@@ -46,5 +54,43 @@ void				terminal_repaint(uint8_t color)
 			vga_buffer[index] = ((uint16_t)color << 8) | ch;
 		}
 	}
+	
+	// Update all screen buffers
+	for (i = 0; i < MAX_SCREENS; i++)
+	{
+		screens[i].color = color;
+		for (int j = 0; j < VGA_ROWS * VGA_COLS; j++)
+		{
+			char ch = screens[i].buffer[j] & 0xFF;
+			screens[i].buffer[j] = ((uint16_t)color << 8) | ch;
+		}
+	}
 }
 
+
+// handle set color CLI
+void				handle_setcolor(char *color)
+{
+	if (ft_strncmp(color, "red", 3) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_RED));
+	}
+	else if (ft_strncmp(color, "green", 5) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_GREEN));
+	}
+	else if (ft_strncmp(color, "blue", 4) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLUE));
+	}
+	else if (ft_strncmp(color, "white", 5) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
+	}
+	else if (ft_strncmp(color, "black", 5) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
+	}
+	else if (ft_strncmp(color, "brown", 5) == 0) {
+		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BROWN));
+	}
+	else {
+		ft_printf("Unknown color: %s\n", color);
+		return ;
+	}
+}

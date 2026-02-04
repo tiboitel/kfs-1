@@ -5,8 +5,8 @@
 extern volatile uint16_t	*vga_buffer;
 
 // Screen management
-static t_screen				screens[MAX_SCREENS];
-static int					current_screen = 0;
+t_screen				screens[MAX_SCREENS];
+int					current_screen = 0;
 
 // External terminal state (need to get/set from terminal.c)
 extern size_t				term_col;
@@ -29,6 +29,8 @@ void				screen_init(void)
 		screens[i].input_end_row = 0;
 		screens[i].input_end_col = 0;
 		screens[i].is_initialized = 0; // Mark as not initialized
+		screens[i].cmd_len = 0;
+		screens[i].cmd_buffer[0] = '\0';
 		
 		// Clear buffer
 		for (int j = 0; j < VGA_ROWS * VGA_COLS; j++)

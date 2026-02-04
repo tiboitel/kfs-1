@@ -27,4 +27,6 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
+void				handle_setcolor(char *color);
+
 #endif

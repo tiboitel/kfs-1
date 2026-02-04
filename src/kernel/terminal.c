@@ -1,5 +1,9 @@
 #include "kernel/terminal.h"
-	#include "kernel/io.h"
+#include "kernel/io.h"
+#include "kernel/vga.h"
+#include "kernel/libc.h"
+#include "kernel/keyboard.h"
+
 
 // External functions
 extern void			cursor_update(size_t row, size_t col);
@@ -285,4 +289,55 @@ void				terminal_display_prompt(const char *prompt)
 	input_start_col = term_col;
 	input_end_col = term_col;
 	input_end_row = term_row;
+}
+
+// terminal_add_char_to_buffer: add character to command buffer
+void				terminal_add_char_to_buffer(char c)
+{
+	extern t_screen		screens[MAX_SCREENS];
+	extern int		current_screen;
+	t_screen		*screen = &screens[current_screen];
+	
+	if (screen->cmd_len < CMD_BUFFER_SIZE - 1)
+	{
+		screen->cmd_buffer[screen->cmd_len] = c;
+		screen->cmd_len++;
+		screen->cmd_buffer[screen->cmd_len] = '\0';
+	}
+}
+
+// terminal_remove_char_from_buffer: remove last character from buffer
+void				terminal_remove_char_from_buffer(void)
+{
+	extern t_screen		screens[MAX_SCREENS];
+	extern int		current_screen;
+	t_screen		*screen = &screens[current_screen];
+	
+	if (screen->cmd_len > 0)
+	{
+		screen->cmd_len--;
+		screen->cmd_buffer[screen->cmd_len] = '\0';
+	}
+}
+
+// terminal_execute_command: process the command in the buffer
+void				terminal_execute_command(void)
+{
+	extern t_screen		screens[MAX_SCREENS];
+	extern int		current_screen;
+	t_screen		*screen = &screens[current_screen];
+	
+	if (screen->cmd_len > 0)
+	{
+		terminal_handle_command(screen->cmd_buffer);
+	}
+	
+	// Clear the buffer
+	screen->cmd_len = 0;
+	screen->cmd_buffer[0] = '\0';
+}
+
+void	terminal_reboot(void)
+{
+    outb(0x64, 0xFE);  // Envoie commande reset au port 0x64
 }

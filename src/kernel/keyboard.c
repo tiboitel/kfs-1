@@ -174,17 +174,22 @@ void			keyboard_poll(void)
 	if (ch == '\b')
 	{
 		terminal_backspace();
+		terminal_remove_char_from_buffer();
 		return;
 	}
 
-	// Handle Enter key - display new line and prompt
+	// Handle Enter key - execute command
 	if (ch == '\n')
 	{
 		terminal_putc('\n');
+		terminal_execute_command();
 		terminal_display_prompt(PROMPT);
 		return;
 	}
-	// Print character if valid
+	// Print character if valid and add to buffer
 	if (ch != 0)
+	{
 		terminal_putc(ch);
+		terminal_add_char_to_buffer(ch);
+	}
 }

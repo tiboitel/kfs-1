@@ -7,6 +7,7 @@
 
 # define MAX_SCREENS 100
 # define PROMPT "root@kfs:~$ "
+# define CMD_BUFFER_SIZE 256
 
 // Screen structure for virtual screens
 typedef struct s_screen {
@@ -18,6 +19,8 @@ typedef struct s_screen {
 	size_t		input_end_row;
 	size_t		input_end_col;
 	int			is_initialized;
+	char		cmd_buffer[CMD_BUFFER_SIZE];
+	size_t		cmd_len;
 } t_screen;
 
 // Terminal functions
@@ -49,5 +52,14 @@ void screen_switch(int screen_id);
 void screen_save_current(void);
 void screen_load(int screen_id);
 int screen_get_current(void);
+
+// Command handling
+void terminal_add_char_to_buffer(char c);
+void terminal_remove_char_from_buffer(void);
+void terminal_execute_command(void);
+void terminal_handle_command(char *str);
+
+// System control
+void terminal_reboot(void);
 
 #endif
