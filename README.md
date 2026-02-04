@@ -1,4 +1,4 @@
-# kfs-1
+# kfs-1 & Kfs-2
 
 ## Files
 start.s     - This file will contain our x86 assembly code that starts our kernel and sets up the x86
