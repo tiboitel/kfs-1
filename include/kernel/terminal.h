@@ -35,6 +35,7 @@ void		terminal_repaint(uint8_t color);
 void		terminal_scroll(void);
 void		terminal_enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 void		terminal_disable_cursor(void);
+void		terminal_cursor_update(size_t row, size_t col);
 void		terminal_update_cursor(void);
 uint8_t		vga_color_entry(enum vga_color fg, enum vga_color bg);
 void		terminal_setcolor(uint8_t color);
@@ -68,4 +69,6 @@ void		terminal_disable_cursor(void);
 // System control
 void		terminal_reboot(void);
 void		terminal_poweroff(void);
+void		terminal_panic(void);
+
 #endif

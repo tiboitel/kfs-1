@@ -37,7 +37,7 @@ void	terminal_setcolor(uint8_t color)
 // Keeps existing characters, only updates their color attributes.
 void	terminal_repaint(uint8_t color)
 {
-	t_screen	screens[MAX_SCREENS];
+	extern t_screen	screens[MAX_SCREENS];
 	int 		i;
 	size_t		index;
 

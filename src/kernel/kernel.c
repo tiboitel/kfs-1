@@ -3,6 +3,7 @@
 # include "kernel/io.h"
 # include "kernel/gdt.h"
 
+
 char *g_kernel_version = "KFS Kernel v0.2";
 
 #if defined(_linux_)

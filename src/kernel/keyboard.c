@@ -119,8 +119,9 @@ void	keyboard_poll(void)
 		}
 		if (second_letter == 'd')
 		{
-			terminal_poweroff();
+			terminal_panic();
 		}
+		terminal_remove_char_from_buffer();
 		return;
 	}
 
