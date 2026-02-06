@@ -70,22 +70,22 @@ void	terminal_repaint(uint8_t color)
 // handle set color CLI
 void	handle_setcolor(char *color)
 {
-	if (ft_strncmp(color, "red", 3) == 0) {
+	if (ft_strncmp(color, "red", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_RED));
 	}
-	else if (ft_strncmp(color, "green", 5) == 0) {
+	else if (ft_strncmp(color, "green", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_GREEN));
 	}
-	else if (ft_strncmp(color, "blue", 4) == 0) {
+	else if (ft_strncmp(color, "blue", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLUE));
 	}
-	else if (ft_strncmp(color, "white", 5) == 0) {
+	else if (ft_strncmp(color, "white", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
 	}
-	else if (ft_strncmp(color, "black", 5) == 0) {
+	else if (ft_strncmp(color, "black", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	}
-	else if (ft_strncmp(color, "brown", 5) == 0) {
+	else if (ft_strncmp(color, "brown", ft_strlen(color)) == 0) {
 		terminal_repaint(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BROWN));
 	}
 	else {
