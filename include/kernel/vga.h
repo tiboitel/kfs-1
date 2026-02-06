@@ -7,8 +7,12 @@
 # define VGA_COLS 80
 # define VGA_ROWS 25
 
+extern uint8_t	current_color;
+extern uint16_t *vga_buffer;
+
 // VGA color constants
-enum vga_color {
+enum vga_color
+{
 	VGA_COLOR_BLACK = 0,
 	VGA_COLOR_BLUE = 1,
 	VGA_COLOR_GREEN = 2,
@@ -27,6 +31,6 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
-void				handle_setcolor(char *color);
+void handle_setcolor(char *color);
 
 #endif
