@@ -2,11 +2,11 @@
 #include "kernel/io.h"
 
 // External VGA buffer
-extern volatile uint16_t	*vga_buffer;
+//extern volatile uint16_t	*vga_buffer;
 
 // Screen management
-t_screen				screens[MAX_SCREENS];
-int					current_screen = 0;
+t_screen					screens[MAX_SCREENS];
+int							current_screen = 0;
 
 // External terminal state (need to get/set from terminal.c)
 extern size_t				term_col;
@@ -15,7 +15,7 @@ extern size_t				input_start_row;
 extern size_t				input_end_row;
 extern size_t				input_end_col;
 
-void				screen_init(void)
+void	screen_init(void)
 {
 	int				i;
 
@@ -41,7 +41,7 @@ void				screen_init(void)
 	screens[0].is_initialized = 1; // Screen 0 is initialized at boot
 }
 
-void				screen_save_current(void)
+void	screen_save_current(void)
 {
 	int				i;
 	
@@ -59,7 +59,7 @@ void				screen_save_current(void)
 	screens[current_screen].input_end_col = input_end_col;
 }
 
-void				screen_load(int screen_id)
+void	screen_load(int screen_id)
 {
 	int			i;
 	
@@ -91,7 +91,7 @@ void				screen_load(int screen_id)
 	}
 }
 
-void				screen_switch(int screen_id)
+void	screen_switch(int screen_id)
 {
 	 
 	if (screen_id < 0 || screen_id >= MAX_SCREENS)

@@ -3,14 +3,14 @@
 # include "kernel/io.h"
 # include "kernel/gdt.h"
 
-char *g_str = "KFS Kernel v0.1";
+char *g_kernel_version = "KFS Kernel v0.2";
 
 #if defined(_linux_)
 #error "This code must be compiled with a cross-compiler"
 #endif
 
 // kernel_main: main function.
-void				kernel_main()
+void	kernel_main()
 {
 	// Initialize GDT
 	gdt_init();
@@ -27,7 +27,7 @@ void				kernel_main()
 	screen_init();
 	
 	terminal_setcolor(vga_color_entry(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
-	ft_printf("Welcome to %s\n\n", g_str);
+	ft_printf("Welcome to %s\n\n", g_kernel_version);
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	ft_printf("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
@@ -36,9 +36,6 @@ void				kernel_main()
 	ft_printf("- Use keyboard to write in the terminal.\n");
 	ft_printf("- Use command help to see available commands.\n\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
-	
-	//print_stack();
-
 	terminal_display_prompt(PROMPT);
 	
 	// Infinite loop - poll keyboard

@@ -4,7 +4,7 @@ extern int ft_printf(const char *format, ...);
 
 gdt_entry *gdt = (gdt_entry *)GDT_ADDRESS;
 
-void gdt_init(void)
+void	gdt_init(void)
 {
 	gdt_ptr gdtr;
 
@@ -79,7 +79,7 @@ void gdt_init(void)
 	load_gdt((uint32_t)&gdtr);
 }
 
-void print_stack(void)
+void	print_stack(void)
 {
 	uint32_t esp, ebp;
 	uint32_t *stack;

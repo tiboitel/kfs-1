@@ -1,25 +1,12 @@
 #include "kernel/keyboard.h"
 #include "kernel/terminal.h"
 
-// Scancodes for special keys
-#define KEY_CTRL	0x1D
-#define KEY_ALT		0x38
-#define KEY_UP		0x48
-#define KEY_DOWN	0x50
-#define KEY_LEFT	0x4B
-#define KEY_RIGHT	0x4D
-#define KEY_DELETE	0x53
-#define KEY_1		0x02
-#define KEY_2		0x03
-#define KEY_3		0x04
-#define KEY_4		0x05
-
 // Modifier keys state
-static int			ctrl_pressed = 0;
-static int			alt_pressed = 0;
+static int	ctrl_pressed = 0;
+static int	alt_pressed = 0;
 
 // US QWERTY keymap (scancodes to ASCII)
-static const char keymap[128] = {
+static const char	keymap[128] = {
 	0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',	// 0x00-0x0E
 	'\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',		// 0x0F-0x1C
 	0, 											// 0x1D Ctrl
@@ -51,21 +38,14 @@ static const char keymap[128] = {
 	0, 0 										// 0x57-0x58 F11, F12
 };
 
-// Arrow key scancodes
-#define KEY_UP		0x48
-#define KEY_DOWN	0x50
-#define KEY_LEFT	0x4B
-#define KEY_RIGHT	0x4D
-#define KEY_DELETE	0x53
-
 // keyboard_init: Initialize keyboard driver
-void			keyboard_init(void)
+void	keyboard_init(void)
 {
 	// Nothing special to do in polling mode
 }
 
 // keyboard_poll: Check if key is available and handle it
-void			keyboard_poll(void)
+void	keyboard_poll(void)
 {
 	uint8_t		scancode;
 	char		ch;
@@ -136,6 +116,10 @@ void			keyboard_poll(void)
 		{
 			ft_printf("^C\n");
 			terminal_display_prompt(PROMPT);
+		}
+		if (second_letter == 'd')
+		{
+			terminal_poweroff();
 		}
 		return;
 	}

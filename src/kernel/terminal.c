@@ -3,14 +3,13 @@
 #include "kernel/vga.h"
 #include "kernel/libc.h"
 #include "kernel/keyboard.h"
+#include "kernel/gdt.h"
 
 
-// External functions
-extern void			cursor_update(size_t row, size_t col);
+//extern void			terminal_cursor_update(size_t row, size_t col);
+
 extern uint8_t			color_get_current(void);
 
-// VGA buffer and cursor position
-volatile uint16_t		*vga_buffer = (uint16_t *)0xB8000;
 size_t				term_col = 0;
 size_t				term_row = 0;
 
@@ -23,7 +22,7 @@ size_t				input_end_row = 0;
 // terminal_update_cursor: wrapper to update cursor at current position.
 void				terminal_update_cursor(void)
 {
-	cursor_update(term_row, term_col);
+	terminal_cursor_update(term_row, term_col);
 }
 
 // terminal_clear: clear the entire screen with the current color.
@@ -295,7 +294,7 @@ void				terminal_display_prompt(const char *prompt)
 void				terminal_add_char_to_buffer(char c)
 {
 	extern t_screen		screens[MAX_SCREENS];
-	extern int		current_screen;
+	extern int				current_screen;
 	t_screen		*screen = &screens[current_screen];
 	
 	if (screen->cmd_len < CMD_BUFFER_SIZE - 1)
@@ -340,4 +339,15 @@ void				terminal_execute_command(void)
 void	terminal_reboot(void)
 {
     outb(0x64, 0xFE);  // Envoie commande reset au port 0x64
+}
+
+void	terminal_poweroff(void)
+{
+	// QEMU/Bochs ACPI poweroff
+	outw(0x604, 0x2000);
+	outw(0xB004, 0x2000);
+
+	// Fallback: halt the CPU if poweroff didn't work
+	for (;;)
+		__asm__ volatile ("hlt");
 }

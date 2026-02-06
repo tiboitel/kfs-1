@@ -4,17 +4,16 @@
 #include "kernel/keyboard.h"
 #include "kernel/gdt.h"
 
-void				cmd_terminal_setcolor(char *color);
-
 void	terminal_handle_command(char *str)
 {
 	char *cmd = ft_strtrim(str, " \t\n\r\v\f");
-	if (ft_strncmp(cmd, "help", ft_strlen(cmd)) == 0)
+	if	(ft_strncmp(cmd, "help", ft_strlen(cmd)) == 0)
 	{
 		ft_printf(" - help: Show this help message\n");
 		ft_printf(" - clear: Clear the terminal screen\n");
 		ft_printf(" - print stack: Print the current kernel stack trace\n");
 		ft_printf(" - reboot: Reboot the system\n");
+		ft_printf(" - shutdown: Power off the system\n");
 		ft_printf(" - setcolor [color]: Change terminal color (red, green, blue, white)\n");
 		// Add more commands as needed
 	}
@@ -30,6 +29,10 @@ void	terminal_handle_command(char *str)
 	{
 		terminal_reboot();
 	}
+	else if (ft_strncmp(cmd, "shutdown", ft_strlen(cmd)) == 0)
+	{
+		terminal_poweroff();
+	}
 	else if (ft_strncmp(cmd, "setcolor ", 9) == 0)
 	{
 		char *color = cmd + 9;
@@ -41,8 +44,7 @@ void	terminal_handle_command(char *str)
 	}
 	else
 	{
-		ft_printf("Unknown command: %s\n", cmd);
+		ft_printf("bash: %s: command not found\n", cmd);
 	}
 	terminal_remove_char_from_buffer();
 }
-
