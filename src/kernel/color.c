@@ -5,6 +5,7 @@
 
 // Current terminal color (global state)
 uint8_t current_color = 0x0F; // White on black by default
+							  //
 // VGA buffer and cursor position
 uint16_t *vga_buffer = (uint16_t *)0xB8000;
 

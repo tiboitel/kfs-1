@@ -7,7 +7,7 @@
 void	terminal_handle_command(char *str)
 {
 	char *cmd = ft_strtrim(str, " \t\n\r\v\f");
-	if	(ft_strncmp(cmd, "help", ft_strlen(cmd)) == 0)
+	if	(ft_strcmp(cmd, "help") == 0)
 	{
 		ft_printf(" - help: Show this help message\n");
 		ft_printf(" - clear: Clear the terminal screen\n");
@@ -17,19 +17,19 @@ void	terminal_handle_command(char *str)
 		ft_printf(" - setcolor [color]: Change terminal color (red, green, blue, white)\n");
 		// Add more commands as needed
 	}
-	else if (ft_strncmp(cmd, "clear", ft_strlen(cmd)) == 0)
-{
+	else if (ft_strcmp(cmd, "clear") == 0)
+	{
 		terminal_clear();
 	}
-	else if (ft_strncmp(cmd, "print stack", ft_strlen(cmd)) == 0)
+	else if (ft_strcmp(cmd, "print stack") == 0)
 	{
 		print_stack();
 	}
-	else if (ft_strncmp(cmd, "reboot", ft_strlen(cmd)) == 0)
+	else if (ft_strcmp(cmd, "reboot") == 0)
 	{
 		terminal_reboot();
 	}
-	else if (ft_strncmp(cmd, "shutdown", ft_strlen(cmd)) == 0)
+	else if (ft_strcmp(cmd, "shutdown") == 0)
 	{
 		terminal_poweroff();
 	}

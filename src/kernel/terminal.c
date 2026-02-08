@@ -5,9 +5,6 @@
 #include "kernel/keyboard.h"
 #include "kernel/gdt.h"
 
-
-//extern void			terminal_cursor_update(size_t row, size_t col);
-
 extern uint8_t			color_get_current(void);
 
 size_t				term_col = 0;
@@ -262,20 +259,6 @@ void				terminal_move_cursor_right(void)
 		term_col = 0;
 	}
 	terminal_update_cursor();
-}
-
-void				terminal_move_cursor_up(void)
-{
-	// Disabled: stay on current line
-}
-
-void				terminal_move_cursor_down(void)
-{
-	if (term_row < input_end_row && term_row < VGA_ROWS - 1)
-	{
-		term_row++;
-		terminal_update_cursor();
-	}
 }
 
 // terminal_display_prompt: display prompt and save position for input

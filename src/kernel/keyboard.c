@@ -38,12 +38,6 @@ static const char	keymap[128] = {
 	0, 0 										// 0x57-0x58 F11, F12
 };
 
-// keyboard_init: Initialize keyboard driver
-void	keyboard_init(void)
-{
-	// Nothing special to do in polling mode
-}
-
 // keyboard_poll: Check if key is available and handle it
 void	keyboard_poll(void)
 {
@@ -126,16 +120,6 @@ void	keyboard_poll(void)
 	}
 
 	// Handle arrow keys
-	if (scancode == KEY_UP)
-	{
-		terminal_move_cursor_up();
-		return;
-	}
-	if (scancode == KEY_DOWN)
-	{
-		terminal_move_cursor_down();
-		return;
-	}
 	if (scancode == KEY_LEFT)
 	{
 		terminal_move_cursor_left();

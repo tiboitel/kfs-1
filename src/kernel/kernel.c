@@ -21,9 +21,6 @@ void	kernel_main()
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
 	terminal_clear();
 	
-	// Initialize keyboard (polling mode)
-	keyboard_init();
-	
 	// Initialize virtual screens
 	screen_init();
 	
@@ -33,7 +30,7 @@ void	kernel_main()
 	ft_printf("42\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
 	ft_printf("- Use Arrow Keys to move cursor. Backspace and Delete supported.\n");
-	ft_printf("- Use Alt+Left/Right arrows to switch between screens.\n");
+	ft_printf("- Use Alt + Left / Right arrows to switch between screens.\n");
 	ft_printf("- Use keyboard to write in the terminal.\n");
 	ft_printf("- Use command help to see available commands.\n\n");
 	terminal_setcolor(vga_color_entry(VGA_COLOR_WHITE, VGA_COLOR_BLACK));
