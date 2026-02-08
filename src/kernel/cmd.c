@@ -11,7 +11,7 @@ void	terminal_handle_command(char *str)
 	{
 		ft_printf(" - help: Show this help message\n");
 		ft_printf(" - clear: Clear the terminal screen\n");
-		ft_printf(" - print stack: Print the current kernel stack trace\n");
+		ft_printf(" - stack: Print the current kernel stack trace\n");
 		ft_printf(" - reboot: Reboot the system\n");
 		ft_printf(" - shutdown: Power off the system\n");
 		ft_printf(" - setcolor [color]: Change terminal color (red, green, blue, white)\n");
@@ -21,7 +21,7 @@ void	terminal_handle_command(char *str)
 {
 		terminal_clear();
 	}
-	else if (ft_strncmp(cmd, "print stack", ft_strlen(cmd)) == 0)
+	else if (ft_strncmp(cmd, "stack", ft_strlen(cmd)) == 0)
 	{
 		print_stack();
 	}
